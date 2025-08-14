@@ -2,13 +2,13 @@ import cv2
 import numpy as np
 import os
 
-def crop_horizontal_whitespace(gray_img, threshold=230):
+def crop_horizontal_whitespace(gray_img, threshold=250):
     col_means = cv2.reduce(gray_img, 0, cv2.REDUCE_AVG).flatten()
     dark_cols = np.where(col_means < threshold)[0]
     if len(dark_cols) == 0:
         return 0, gray_img.shape[1]
     left, right = dark_cols.min(), dark_cols.max()
-    return left, right
+    return left-15, right
 
 def find_staff_lines(gray_img, left_crop=0, right_crop=None, darkness_threshold=130, max_line_thickness=4):
     if right_crop is None:
@@ -46,11 +46,11 @@ def group_staff_lines(staff_lines, lines_per_system=5, max_line_spacing=50, min_
             temp_group.append(line)
         else:
             if len(temp_group) >= min_lines_per_system:
-                systems.append((temp_group[0] - 5, temp_group[-1] + 5))
+                systems.append((temp_group[0] - 35, temp_group[-1] + 35))
             temp_group = [line]
 
     if len(temp_group) >= min_lines_per_system:
-        systems.append((temp_group[0] - 5, temp_group[-1] + 5))
+        systems.append((temp_group[0] - 35, temp_group[-1] + 35))
 
     return systems
 
@@ -79,7 +79,7 @@ def export_cropped_systems(image_path, output_dir):
         print(f"Saved: {output_path}")
 
 if __name__ == "__main__":
-    input_dir = r"C:\Desktop\MMV2\TrainingData\Single Lined"  # Your folder path
+    input_dir = r"C:\Desktop\MMV2\TrainingData\Single Lined New PNGs"  # Your folder path
     output_dir = "Single_Lined_Cropped"
 
     for filename in os.listdir(input_dir):
