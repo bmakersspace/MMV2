@@ -154,7 +154,7 @@ def process_image():
         # Annotate barlines and measure numbers
         for i, x in enumerate(bars_x):
             measure_num = measure_count + i + 1
-            pos = (int(x + left - 10), int(top + 15))
+            pos = (int(x + left - 20), int(top + 15))
     
             # Draw black border (thicker)
             cv2.putText(

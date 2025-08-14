@@ -96,10 +96,15 @@
     <button type="submit">Upload and Number</button>
   </form>
 
+
+
   <div class="output-container" id="output-container"></div>
 
   <button id="download-all" style="display: none;">📦 Download All Numbered Images</button>
   <button id="print-all" style="margin-top: 10px; display: none;">🖨️ Print All</button>
+  <p id="loadingText" style="display:none; font-weight: bold; font-size: 18px;">
+    Numbering your Measures…
+  </p>
 
   <script>
     const form = document.getElementById('upload-form');
@@ -110,6 +115,11 @@
     const printBtn = document.getElementById('print-all');
 
     let processedBlobs = [];
+
+
+    document.getElementById("upload-form").addEventListener("submit", function () {
+      document.getElementById("loadingText").style.display = "block";
+    });
 
     fileInput.addEventListener('change', () => {
       previewContainer.innerHTML = '';
@@ -133,14 +143,14 @@
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-
-
       const files = Array.from(fileInput.files);
       const clefType = document.getElementById('clef-type').value;
       const measureStart = document.getElementById('measure-start').value;
-
       outputContainer.innerHTML = '';
       processedBlobs = [];
+
+      // ✅ Show loading text
+      document.getElementById("loadingText").style.display = "block";
 
       for (let i = 0; i < files.length; i++) {
         const formData = new FormData();
@@ -152,7 +162,6 @@
           method: 'POST',
           body: formData
         });
-
 
         const measureCount = res.headers.get("X-Measure-Count");
         document.getElementById("measure-start").value = measureCount;
@@ -166,11 +175,15 @@
         outputContainer.appendChild(img);
       }
 
+      // ✅ Hide loading text when done
+      document.getElementById("loadingText").style.display = "none";
+
       if (processedBlobs.length > 0) {
         downloadBtn.style.display = 'inline-block';
         printBtn.style.display = 'inline-block';
       }
     });
+
 
 
 
@@ -238,6 +251,7 @@
         printWindow.focus();
         printWindow.print();
       };
+
     });
 
 
